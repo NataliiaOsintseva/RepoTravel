@@ -10,7 +10,10 @@
     "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
     "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
     "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-rc1-final",
-    "Microsoft.Extensions.Configuration": "1.0.0-rc1-final"
+    "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Tooling.Razor": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Razor": "4.0.0-rc1-final",
+    "Microsoft.AspNet.Mvc.Razor": "6.0.0-rc1-final"
   },
 
   "commands": {
