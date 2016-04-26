@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Travel;
+using Travel.Models;
 using Travel.Services;
 using Travel.ViewModels;
 
@@ -13,15 +14,19 @@ namespace Travel.Controllers.Web
     public class AppController : Controller
     {
         private IMailService _mailService;
+        private WorldContext _context;
 
-        public AppController(IMailService service)
+        public AppController(IMailService service, WorldContext context)
         {
             _mailService = service;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var trips = _context.Trips.OrderBy(t => t.Name).ToList();
+
+            return View(trips);
         }
 
         public IActionResult About()

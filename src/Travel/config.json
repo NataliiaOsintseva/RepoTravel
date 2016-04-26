@@ -2,5 +2,8 @@
   "AppSettings": {
     "SiteEmailAddress": "nataly.osya@gmail.com"
 
+  },
+  "Data": {
+    "WorldContextConnection": "Server=(localdb)\\MSSQLLocalDB;Database=.TheTravelDB;Trusted_Connection=true;MultipleActiveResultSets=true;"
   }
 }
