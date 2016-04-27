@@ -11,6 +11,7 @@ using Travel.Services;
 using Microsoft.Extensions.PlatformAbstractions;
 using Travel.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 
 namespace Travel
 {
@@ -32,7 +33,11 @@ namespace Travel
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });
 
             services.AddLogging();
 
