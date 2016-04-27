@@ -4,6 +4,6 @@
 
   },
   "Data": {
-    "WorldContextConnection": "Server=(localdb)\\MSSQLLocalDB;Database=.TheTravelDB;Trusted_Connection=true;MultipleActiveResultSets=true;"
+    "TravelContextConnection": "Server=(localdb)\\MSSQLLocalDB;Database=.TheTravelDB;Trusted_Connection=true;MultipleActiveResultSets=true;"
   }
 }

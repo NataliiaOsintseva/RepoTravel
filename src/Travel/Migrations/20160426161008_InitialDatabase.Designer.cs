@@ -7,7 +7,7 @@ using Travel.Models;
 
 namespace Travel.Migrations
 {
-    [DbContext(typeof(WorldContext))]
+    [DbContext(typeof(TravelContext))]
     [Migration("20160426161008_InitialDatabase")]
     partial class InitialDatabase
     {

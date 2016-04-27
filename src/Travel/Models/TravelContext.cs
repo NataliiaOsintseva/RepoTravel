@@ -7,21 +7,21 @@ using Microsoft.Data.Entity;
 
 namespace Travel.Models
 {
-    public class WorldContext : DbContext
+    public class TravelContext : DbContext
     {
 
-        public WorldContext()
+        public TravelContext()
         {
             Database.EnsureCreated();
         }
 
         public DbSet<Trip> Trips { get; set; }
-        public DbSet<Trip> Stops { get; set; }
+        public DbSet<Stop> Stops { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connString = Startup.Configuration["Data:WorldContextConnection"];
+            var connString = Startup.Configuration["Data:TravelContextConnection"];
 
             optionsBuilder.UseSqlServer(connString);
 

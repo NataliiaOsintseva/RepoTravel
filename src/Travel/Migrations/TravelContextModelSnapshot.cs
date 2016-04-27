@@ -7,8 +7,8 @@ using Travel.Models;
 
 namespace Travel.Migrations
 {
-    [DbContext(typeof(WorldContext))]
-    partial class WorldContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(TravelContext))]
+    partial class TravelContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

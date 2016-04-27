@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Travel.Services;
 using Microsoft.Extensions.PlatformAbstractions;
 using Travel.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Travel
 {
@@ -33,9 +34,14 @@ namespace Travel
         {
             services.AddMvc();
 
+            services.AddLogging();
+
             services.AddEntityFramework()
                 .AddSqlServer()
-                .AddDbContext<WorldContext>();
+                .AddDbContext<TravelContext>();
+
+            services.AddTransient<TravelContextSeedData>();
+            services.AddScoped<ITravelRepository, TravelRepository>();
             
 #if DEBUG
             services.AddScoped<IMailService, DebugMailService>();
@@ -46,8 +52,11 @@ namespace Travel
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, TravelContextSeedData seeder, ILoggerFactory loggerFactory)
         {
+
+            loggerFactory.AddDebug(LogLevel.Warning);
+
             app.UseStaticFiles();
             //app.UseDefaultFiles();
             app.UseMvc(config =>
@@ -58,6 +67,8 @@ namespace Travel
                   defaults: new { controller = "App", action = "Index" }
                   );
             });
+
+            seeder.EnsureSeedData();
         }
 
         // Entry point for the application.

@@ -14,17 +14,17 @@ namespace Travel.Controllers.Web
     public class AppController : Controller
     {
         private IMailService _mailService;
-        private WorldContext _context;
+        private ITravelRepository _repository;
 
-        public AppController(IMailService service, WorldContext context)
+        public AppController(IMailService service, ITravelRepository repository)
         {
             _mailService = service;
-            _context = context;
+            _repository = repository;
         }
 
         public IActionResult Index()
         {
-            var trips = _context.Trips.OrderBy(t => t.Name).ToList();
+            var trips = _repository.GetAllTrips();
 
             return View(trips);
         }
