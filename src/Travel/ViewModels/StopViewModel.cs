@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Travel.ViewModels
 {
-    public class TripViewModel
+    public class StopViewModel
     {
         public int Id { get; set; }
 
@@ -15,8 +15,11 @@ namespace Travel.ViewModels
         [StringLength(255, MinimumLength = 5)]
         public string Name { get; set; }
 
-        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
 
-        public IEnumerable<StopViewModel> Stops { get; set; }
+        [Required]
+        public DateTime Arrival { get; set; }
+        public int Order { get; set; }
     }
 }

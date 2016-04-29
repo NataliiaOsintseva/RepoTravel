@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,31 +15,52 @@ namespace Travel.Controllers.Api
     [Route("api/trips")]
     public class TripController : Controller
     {
+        private ILogger<TripController> _logger;
         private ITravelRepository _repository;
 
-        public TripController(ITravelRepository repository)
+        public TripController(ITravelRepository repository, ILogger<TripController> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         [HttpGet("")]
         public JsonResult Get()
         {
-            var results = _repository.GetAllTripsWithStops();
+            var results = Mapper.Map<IEnumerable<TripViewModel>>(_repository.GetAllTripsWithStops());
             return Json(results);
         }
 
         [HttpPost("")]
-        public JsonResult Post([FromBody]TripViewModel newTrip)
+        public JsonResult Post([FromBody]TripViewModel vm)
         {
-            if (ModelState.IsValid)
+            try
             {
-                Response.StatusCode = (int)HttpStatusCode.Created;
-                return Json(true);
-            }
+                if (ModelState.IsValid)
+                {
+                    var newTrip = Mapper.Map<Trip>(vm);
 
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(new { Message = "Failed", ModelState = ModelState });
-        }
+                    // Save to the DB
+                    _logger.LogInformation("Attempting to save trip");
+                    _repository.AddTrip(newTrip);
+
+                    if (_repository.SaveAll())
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.Created;
+                        return Json(Mapper.Map<TripViewModel>(newTrip));
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Failed to save a trip", ex);
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { Message = ex.Message });
+            }
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { Message = "Failed", ModelState = ModelState });
+
+          }
+    
     }
 }

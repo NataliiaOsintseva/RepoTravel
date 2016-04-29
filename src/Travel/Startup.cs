@@ -12,6 +12,8 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Travel.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
+using AutoMapper;
+using Travel.ViewModels;
 
 namespace Travel
 {
@@ -64,6 +66,14 @@ namespace Travel
 
             app.UseStaticFiles();
             //app.UseDefaultFiles();
+
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<Trip, TripViewModel>().ReverseMap();
+                config.CreateMap<Stop, StopViewModel>().ReverseMap();
+
+            });
+
             app.UseMvc(config =>
             {
                 config.MapRoute(
