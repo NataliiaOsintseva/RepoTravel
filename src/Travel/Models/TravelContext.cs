@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Data.Entity;
 
 namespace Travel.Models
 {
-    public class TravelContext : DbContext
+    public class TravelContext : IdentityDbContext<TravelUser>
     {
 
         public TravelContext()

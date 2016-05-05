@@ -1,3 +1,4 @@
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,28 @@ namespace Travel.Models
     public class TravelContextSeedData
     {
         private TravelContext _context;
+        private UserManager<TravelUser> _userManager;
 
-        public TravelContextSeedData(TravelContext context)
+        public TravelContextSeedData(TravelContext context, UserManager<TravelUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public void EnsureSeedData()
+        public async Task EnsureSeedData()
         {
+            if(await _userManager.FindByEmailAsync("hmvs.test@gmail.com") == null)
+            {
+                // Add the user
+                var newUser = new TravelUser()
+                {
+                    UserName = "Vadya K",
+                    Email = "hmvs.test@gmail.com"
+                };
+
+                await _userManager.CreateAsync(newUser, "P@ssword");
+            }
+
             if (!_context.Trips.Any())
             {
                 // Add new Data
@@ -25,7 +40,7 @@ namespace Travel.Models
                 {
                     Name = "US Trip",
                     Created = DateTime.UtcNow,
-                    UserName = "",
+                    UserName = "Vadya K",
                     Stops = new List<Stop>()
                     {
                         new Stop() {  Name = "Atlanta, GA", Arrival = new DateTime(2014, 6, 4), Latitude = 33.748995, Longitude = -84.387982, Order = 0 },
@@ -44,7 +59,7 @@ namespace Travel.Models
                 {
                     Name = "World Trip",
                     Created = DateTime.UtcNow,
-                    UserName = "",
+                    UserName = "Vadya K",
                     Stops = new List<Stop>()
                     {
                         new Stop() { Order = 0, Latitude =  33.748995, Longitude =  -84.387982, Name = "Atlanta, Georgia", Arrival = DateTime.Parse("Jun 3, 2014") },

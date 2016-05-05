@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Travel.Models;
+using Travel.Services;
 using Travel.ViewModels;
 
 namespace Travel.Controllers.Api
@@ -15,13 +16,17 @@ namespace Travel.Controllers.Api
     [Route("api/trips/{tripName}/stops")]
     public class StopController : Controller
     {
+        private CoordService _coordService;
         private ILogger<StopController> _logger;
         private ITravelRepository _repository;
 
-        public StopController(ITravelRepository repository, ILogger<StopController> logger)
+        public StopController(ITravelRepository repository,
+            ILogger<StopController> logger,
+            CoordService coordService)
         {
             _repository = repository;
             _logger = logger;
+            _coordService = coordService;
         }
 
         [HttpGet("")]
@@ -46,7 +51,7 @@ namespace Travel.Controllers.Api
             }
         }
 
-        public JsonResult Post(string tripName, [FromBody]StopViewModel vm)
+        public async Task<JsonResult> Post(string tripName, [FromBody]StopViewModel vm)
         {
             try
             {
@@ -54,7 +59,18 @@ namespace Travel.Controllers.Api
                 {
                     // Map to the Entity
                     var newStop = Mapper.Map<Stop>(vm);
+
                     // Lookup  Coordinates
+                    var coordResult = await _coordService.Lookup(newStop.Name);
+
+                    if (!coordResult.Success)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Json(coordResult.Message);
+                    }
+
+                    newStop.Latitude = coordResult.Latitude;
+                    newStop.Longitude = coordResult.Longitude;
 
                     // Save to DB
                     _repository.AddStop(tripName, newStop);
@@ -66,7 +82,7 @@ namespace Travel.Controllers.Api
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError("Failed to save new stop", ex);
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using AutoMapper;
 using Travel.ViewModels;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Travel
 {
@@ -41,12 +42,21 @@ namespace Travel
                     opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
 
+            services.AddIdentity<TravelUser, IdentityRole>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+                config.Password.RequiredLength = 8;
+                config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
+            })
+            .AddEntityFrameworkStores<TravelContext>();
+
             services.AddLogging();
 
             services.AddEntityFramework()
                 .AddSqlServer()
                 .AddDbContext<TravelContext>();
 
+            services.AddScoped<CoordService>();
             services.AddTransient<TravelContextSeedData>();
             services.AddScoped<ITravelRepository, TravelRepository>();
             
@@ -59,13 +69,15 @@ namespace Travel
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, TravelContextSeedData seeder, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, TravelContextSeedData seeder, ILoggerFactory loggerFactory)
         {
 
             loggerFactory.AddDebug(LogLevel.Warning);
 
             app.UseStaticFiles();
             //app.UseDefaultFiles();
+
+            app.UseIdentity();
 
             Mapper.Initialize(config =>
             {
@@ -83,7 +95,7 @@ namespace Travel
                   );
             });
 
-            seeder.EnsureSeedData();
+            await seeder.EnsureSeedData();
         }
 
         // Entry point for the application.
