@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,6 +14,7 @@ using Travel.ViewModels;
 
 namespace Travel.Controllers.Api
 {
+    [Authorize]
     [Route("api/trips/{tripName}/stops")]
     public class StopController : Controller
     {
@@ -33,7 +35,7 @@ namespace Travel.Controllers.Api
         public JsonResult Get(string tripName)
         {
             try {
-                var results = _repository.GetTripByName(tripName);
+                var results = _repository.GetTripByName(tripName, User.Identity.Name);
 
                 if(results == null)
                 {
@@ -73,7 +75,7 @@ namespace Travel.Controllers.Api
                     newStop.Longitude = coordResult.Longitude;
 
                     // Save to DB
-                    _repository.AddStop(tripName, newStop);
+                    _repository.AddStop(tripName, User.Identity.Name, newStop);
 
                     if (_repository.SaveAll())
                     {

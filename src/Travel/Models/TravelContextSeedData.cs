@@ -30,7 +30,7 @@ namespace Travel.Models
                     Email = "hmvs.test@gmail.com"
                 };
 
-                await _userManager.CreateAsync(newUser, "P@ssword");
+                await _userManager.CreateAsync(newUser, "P@ssword8");
             }
 
             if (!_context.Trips.Any())
