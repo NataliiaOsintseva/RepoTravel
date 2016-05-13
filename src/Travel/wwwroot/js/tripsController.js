@@ -2,7 +2,7 @@
 
 (function () {
 
-    // "use strict";
+    "use strict";
 
     // Getting existing module
     angular.module("app-trips")
